@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生词本</title>
+    <link rel="stylesheet" href="./icon/iconfont.css">
+</head>
+<style>
+    #jia {
+        font-size: 20px;
+        display: inline-block;
+    }
+
+    #dc {
+        width: 300px;
+        border: 1px solid rgb(128, 0, 0);
+        border-radius: 15px;
+        margin: 10px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 10px 5px 5px rgb(0, 8, 255);
+    }
+
+    .sp {
+        position: absolute;
+        top: 10px;
+        right: 5px;
+        font-weight: 600;
+    }
+
+    .detail {
+        width: 600px;
+        height: 250px;
+        border: 1px solid yellow;
+    }
+
+    #cnt3 {
+        font-size: 50px;
+        text-align: center;
+    }
+
+    #cnt4 {
+        font-size: 50px;
+        text-align: center;
+    }
+
+    .detail img {
+        width: 50px;
+        margin-left: 200px;
+        margin-top: 60px;
+    }
+
+    .detail span {
+        font-size: 30px;
+    }
+
+    .ip2 input {
+        width: 150px;
+        height: 36px;
+        margin-left: 230px;
+        margin-top: 50px;
+    }
+
+    .img1 {
+        width: 20px;
+    }
+</style>
+
+<body>
+    <div id="d1">
+        <h1 style="margin: 15px;">生词本</h1>
+        <button class="add" onclick="add()" id="jia">添加单词</button>
+        <hr>
+        <div id="shengciList">
+
+        </div>
+    </div>
+    <div id="d2" style="display: none;">
+        <h1 onclick="backd1()">新增单词 返回</h1>
+        <hr>
+        <div>
+            <div>中文：<input type="text" placeholder="请输入中文" id="ip1"></div>
+            <div>英文：<input type="text" placeholder="请输入英文" id="ip2"></div>
+        </div>
+    </div>
+    <div id="d3" style="display: none;">
+        <h1 onclick="backd3()">回忆单词 返回</h1>
+        <hr>
+        <div class="detail">
+            <div id="cnt3"></div>
+            <div class="ip2">
+                <input id="ip3" type="text" placeholder="请输入单词拼写">
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+    var words = []
+    var currentWord
+    showWord()
+    function showWord() {
+        if (localStorage.words) {
+            words = JSON.parse(localStorage.words)
+            shengciList.innerHTML = ''
+            for (var i = words.length - 1; i >= 0; i--) {
+                var s = words[i]
+                shengciList.innerHTML += "<div class='list' id='dc' onclick='edit(" + i + ")'>"
+                    + (s.flag ? "<img src='./img/1.png' class='img1'>" : "")
+                    + "<div class=che id='ch'>" + s.chinese + "</div>"
+                    + "<span class='iconfont icon-chacha sp' onclick='del(" + i + ")'></span>"
+                    + "</div>"
+            }
+        }
+    }
+    for (var i = 0; i < words.length; i++) {
+        if (words[i].flag) {
+        }
+    }
+    function add() {
+        d2.style.display = "block"
+        d1.style.display = "none"
+
+    }
+    function backd1() {
+        d1.style.display = "block"
+        d2.style.display = "none"
+        var word = {
+            chinese: ip1.value,
+            english: ip2.value,
+            flag: false
+        }
+        words.push(word)
+        localStorage.words = JSON.stringify(words)
+        ip1.value = ''
+        ip2.value = ''
+        showWord()
+
+    }
+    function backd3() {
+        d1.style.display = "block"
+        d3.style.display = "none"
+        showWord()
+    }
+    function del(i) {
+        // alert(i)
+        if (confirm("确定要删除吗？")) {
+            words.splice(i, 1)
+            localStorage.words = JSON.stringify(words)
+            showWord()
+            window.event.stopPropagation()
+        }
+    }
+    function edit(i) {
+        currentWord = words[i]
+        d3.style.display = "block"
+        d1.style.display = "none"
+        cnt3.innerHTML = currentWord.chinese
+        // cnt4.innerHTML = currentWord.english
+    }
+
+    var ip3 = document.getElementById("ip3")
+    ip3.addEventListener("keyup", function (i) {
+        // console.log(currentWord.english);
+        var nowE = ip3.value
+        if (nowE == currentWord.english) {
+            alert("正确！")
+            currentWord.flag = true
+            // console.log();
+            localStorage.words = JSON.stringify(words);
+            ip3.value = ''
+        }
+    })
+
+
+</script>
+
+</html>
